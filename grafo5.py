@@ -1,4 +1,5 @@
 import random
+import networkx as nx
 
 class Grafo:
     def __init__(self):
@@ -79,3 +80,19 @@ print("Vértices desde los cuales no se puede acceder a otro vértice:", grafo.v
 print("Cantidad de vértices en el grafo:", grafo.contar_vertices())
 print("Vértices con un ciclo directo:", grafo.ciclos_directos())
 print("Arista(s) más larga(s):", grafo.arista_mas_larga())
+import matplotlib.pyplot as plt
+
+def dibujar_grafo(grafo):
+    G = nx.DiGraph()
+    for v in grafo.vertices:
+        G.add_node(v)
+    for origen, destino, etiqueta in grafo.aristas:
+        G.add_edge(origen, destino, weight=etiqueta)
+
+    pos = nx.spring_layout(G)
+    labels = nx.get_edge_attributes(G, 'weight')
+    nx.draw(G, pos, with_labels=True, node_color='skyblue', node_size=2000, font_size=10, font_weight='bold', arrows=True)
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
+    plt.show()
+
+dibujar_grafo(grafo)
