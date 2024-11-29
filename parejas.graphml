@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d1" for="edge" attr.name="fecha" attr.type="string" />
+  <key id="d0" for="node" attr.name="nombre" attr.type="string" />
+  <graph edgedefault="undirected">
+    <node id="a">
+      <data key="d0">Pepe</data>
+    </node>
+    <node id="b">
+      <data key="d0">Ana</data>
+    </node>
+    <edge source="a" target="b">
+      <data key="d1">25-05-2003</data>
+    </edge>
+  </graph>
+</graphml>
