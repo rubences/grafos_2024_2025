@@ -80,8 +80,9 @@ print(dfs_recorrido)
 
 # Recorrido en anchura (BFS) desde Ávila
 print("Recorrido en anchura (BFS) desde Ávila:")
-bfs_recorrido = list(nx.bfs_tree(G, source="Ávila"))
-print(bfs_recorrido)
+bfs_recorrido = list(nx.bfs_edges(G, source="Ávila"))
+bfs_nodos = ["Ávila"] + [v for u, v in bfs_recorrido]
+print(bfs_nodos)
 # Recorrido en profundidad (DFS) desde Ávila con paso a paso y suma de aristas
 print("Recorrido en profundidad (DFS) desde Ávila con paso a paso y suma de aristas:")
 dfs_recorrido = list(nx.dfs_preorder_nodes(G, source="Ávila"))
@@ -106,14 +107,15 @@ plt.title("Recorrido en profundidad (DFS) desde Ávila")
 plt.show()
 
 # Recorrido en anchura (BFS) desde Ávila con paso a paso y suma de aristas
-print("Recorrido en anchura (BFS) desde Ávila con paso a paso y suma de aristas:")
-bfs_recorrido = list(nx.bfs_tree(G, source="Ávila"))
+bfs_recorrido = list(nx.bfs_edges(G, source="Ávila"))
 bfs_distancia_total = 0
-for i in range(len(bfs_recorrido) - 1):
-    distancia = G[bfs_recorrido[i]][bfs_recorrido[i + 1]]['weight']
+for u, v in bfs_recorrido:
+    distancia = G[u][v]['weight']
     bfs_distancia_total += distancia
-    print(f"De {bfs_recorrido[i]} a {bfs_recorrido[i + 1]}: {distancia} km")
+    print(f"De {u} a {v}: {distancia} km")
 print(f"Distancia total en BFS: {bfs_distancia_total} km")
+bfs_nodos = ["Ávila"] + [v for u, v in bfs_recorrido]
+print(bfs_nodos)
 print(bfs_recorrido)
 
 # Crear un subgrafo con el recorrido BFS
@@ -128,5 +130,52 @@ nx.draw_networkx_edge_labels(subgrafo_bfs, pos_bfs, edge_labels=labels_bfs)
 plt.title("Recorrido en anchura (BFS) desde Ávila")
 plt.show()
 
+# Dijkstra: camino mínimo de un vértice al resto de los vértices del grafo desde Ávila hasta Zamora
+print("Dijkstra: Camino mínimo desde Ávila hasta Zamora")
+dijkstra_path = nx.dijkstra_path(G, source="Ávila", target="Zamora", weight='weight')
+dijkstra_distancia = nx.dijkstra_path_length(G, source="Ávila", target="Zamora", weight='weight')
+print(f"Camino: {dijkstra_path}")
+print(f"Distancia total: {dijkstra_distancia} km")
 
+# Crear un subgrafo con el camino Dijkstra
+subgrafo_dijkstra = G.subgraph(dijkstra_path)
+
+# Dibujar el subgrafo Dijkstra
+pos_dijkstra = nx.spring_layout(subgrafo_dijkstra)
+nx.draw(subgrafo_dijkstra, pos_dijkstra, with_labels=True, node_size=3000, node_color="skyblue", font_size=10, font_weight="bold", edge_color="gray")
+labels_dijkstra = nx.get_edge_attributes(subgrafo_dijkstra, 'weight')
+nx.draw_networkx_edge_labels(subgrafo_dijkstra, pos_dijkstra, edge_labels=labels_dijkstra)
+
+plt.title("Camino mínimo (Dijkstra) desde Ávila hasta Zamora")
+plt.show()
+
+# Floyd-Warshall: camino mínimo entre dos nodos cualesquiera de la red (Zamora a Valladolid)
+print("Floyd-Warshall: Camino mínimo entre Zamora y Valladolid")
+floyd_distancias = dict(nx.floyd_warshall(G, weight='weight'))
+
+# Mostrar las distancias calculadas por Floyd-Warshall
+print("Distancias calculadas por Floyd-Warshall:")
+for origen, destinos in floyd_distancias.items():
+    for destino, distancia in destinos.items():
+        print(f"De {origen} a {destino}: {distancia} km")
+
+# Reconstruir el camino mínimo entre Zamora y Valladolid
+floyd_path = nx.reconstruct_path("Zamora", "Valladolid", floyd_distancias)
+floyd_distancia = floyd_distancias["Zamora"]["Valladolid"]
+print(f"Camino: {floyd_path}")
+print(f"Distancia total: {floyd_distancia} km")
+
+# Crear un subgrafo con el camino Floyd-Warshall
+subgrafo_floyd = G.subgraph(floyd_path)
+
+# Dibujar el subgrafo Floyd-Warshall paso a paso
+print("Visualización paso a paso del camino mínimo (Floyd-Warshall) entre Zamora y Valladolid")
+for i in range(len(floyd_path) - 1):
+    subgrafo_parcial = G.subgraph(floyd_path[:i + 2])
+    pos_floyd = nx.spring_layout(subgrafo_parcial)
+    nx.draw(subgrafo_parcial, pos_floyd, with_labels=True, node_size=3000, node_color="skyblue", font_size=10, font_weight="bold", edge_color="gray")
+    labels_floyd = nx.get_edge_attributes(subgrafo_parcial, 'weight')
+    nx.draw_networkx_edge_labels(subgrafo_parcial, pos_floyd, edge_labels=labels_floyd)
+    plt.title(f"Paso {i + 1}: Camino mínimo (Floyd-Warshall) entre Zamora y Valladolid")
+    plt.show()
 
